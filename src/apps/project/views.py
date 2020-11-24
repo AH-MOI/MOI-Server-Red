@@ -4,28 +4,42 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-
 from .models import Project
 from .serializers import ProjectSerializer
+from django.shortcuts import get_object_or_404
+
+class ProjectViewSet(viewsets.ViewSet):
+
+    def list(self,request):
+
+        queryset = Project.objects.all()
+        serializer = ProjectSerializer(queryset,many=True)
+
+        return Response(serializer.data)
+
+    def create(self, request):
+
+        obj = {
+            "title":request.data["title"], 
+            "content":request.data["content"],
+            "closing_date":request.data["closing_date"],
+            "writer":request.data["writer"], 
+            "personnel":request.data["personnel"],
+            "hashtag":request.data["hashtag"],
+            "profile":request.data["profile"]
+            }
 
 
-class GetProjectAPI(generics.RetrieveAPIView):
+        serializer = ProjectSerializer(data=obj)
 
-    serializer_class = ProjectSerializer
+        if not serializer.is_valid():
+            return Response(serializer.errors)
 
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        serializer.save()
+        return Response(serializer.data)
 
-    def get_queryset(self):
-        return Project.objects.get(id=self.kwargs["id"])
-    
-class ListProjectAPI(generics.ListAPIView):
-
-    serializer_class = ProjectSerializer
-
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
-
-    def get_queryset(self):
-        return Project.objects.all()
+    def retrieve(self, request, pk=None):
+        queryset = Project.objects.all()
+        project = get_object_or_404(queryset, pk=pk)
+        serializer = ProjectSerializer(project)
+        return Response(serializer.data)
