@@ -21,7 +21,7 @@ class ProjectViewSet(viewsets.ViewSet):
             "title":request.data["title"], 
             "content":request.data["content"],
             "closing_date":request.data["closing_date"],
-            "writer":request.user.id, 
+            "writer":request.data["writer"], 
             "personnel":request.data["personnel"],
             "hashtag":request.data["hashtag"],
             "profile":request.data["profile"]
@@ -36,4 +36,3 @@ class ProjectViewSet(viewsets.ViewSet):
         serializer.save()
         return Response(serializer.data)
 
-        
