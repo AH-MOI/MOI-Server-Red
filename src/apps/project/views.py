@@ -26,7 +26,9 @@ class ProjectViewSet(viewsets.ViewSet):
             queryset = queryset.filter(title__icontains=search)
             
         if part != None :
-            queryset = queryset.filter(personnel__icontains=part)
+            for p in part.split("+"):
+                queryset = queryset.filter(personnel__icontains=p)
+                
         if tags != None :
             for tag in tags.split("+"):
                 queryset = queryset.filter(hashtag__icontains=tag)
