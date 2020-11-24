@@ -15,9 +15,24 @@ class ProjectViewSet(viewsets.ViewSet):
 
     def list(self,request):
 
-        queryset = Project.objects.all()
-        serializer = ProjectSerializer(queryset,many=True)
+        search = request.GET.get('search' , None)
+        part = request.GET.get('part',None)
+        tags = request.GET.get('tags',None)
 
+        queryset = Project.objects.all()
+        
+        
+        if search != None :
+            queryset = queryset.filter(title__icontains=search)
+            
+        if part != None :
+            queryset = queryset.filter(personnel__icontains=part)
+        if tags != None :
+            for tag in tags.split("+"):
+                queryset = queryset.filter(hashtag__icontains=tag)
+            
+
+        serializer = ProjectSerializer(queryset,many=True)
         return Response(serializer.data)
 
     def create(self, request):
@@ -41,20 +56,26 @@ class ProjectViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        queryset = Project.objects.filter(pk=pk)
-        serializer = ProjectSerializer(queryset.values()[0])
-
-        personnel = queryset.values()[0]["personnel"].split("|")
+        queryset = Project.objects.get(pk=pk)
+        personnel = queryset.personnel.split("|")
         personnels = []
         
+
         for i in personnel :
             partandpeople = i.split("/")
+            cur_people = Participation.objects.filter(student_area=partandpeople[0]).aggregate(Count('id'))["id__count"]
             
             obj = { "part" : partandpeople[0],
                     "total" : int(partandpeople[1]),
-                    "cur_people" : 2 }
+                    "cur_people" : cur_people }
             personnels.append(obj)
 
-        data = {"personnels":personnels}
-        data.update(serializer.data)
-        return Response(data)
+        hashtag = queryset.hashtag.split("#")[1:]
+
+        queryset.personnel = personnels
+        queryset.hashtag = hashtag
+        
+        serializer = ProjectSerializer(queryset)
+
+        
+        return Response(serializer.data)
