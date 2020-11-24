@@ -25,7 +25,7 @@ SECRET_KEY = 'an0!qw4^t=zzgj%o034x7bv+x1+=udjcyho$0@86(h!u$(968s'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -78,8 +78,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'moi',
+        'USER': 'admin',
+        'PASSWORD': 'asdfjkl;',
+        'HOST': 'moi-rds.cfc2yl6t4e27.ap-northeast-2.rds.amazonaws.com',
+        'PORT': '3306',
+        
     }
 }
 
@@ -121,3 +126,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
