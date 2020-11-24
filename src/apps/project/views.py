@@ -17,6 +17,6 @@ class GetProjectAPI(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
-    def def get_queryset(self):
-        return super().get_queryset()
+    def get_queryset(self):
+        return Project.objects.get(id=self.kwargs["id"])
     
