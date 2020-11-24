@@ -7,6 +7,9 @@ from .serializers import ProjectSerializer
 from django.shortcuts import get_object_or_404
 from ..participation.models import Participation 
 from ..participation.serializers import ParticipationSerializer
+from django.db.models import Avg, Max, Min, Sum, Count
+
+import json
 
 class ProjectViewSet(viewsets.ViewSet):
 
@@ -38,8 +41,20 @@ class ProjectViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        queryset = Project.objects.all()
-        project = get_object_or_404(queryset, pk=pk)
-        serializer = ProjectSerializer(project)
+        queryset = Project.objects.filter(pk=pk)
+        serializer = ProjectSerializer(queryset.values()[0])
 
-        return Response(serializer.data)
+        personnel = queryset.values()[0]["personnel"].split("|")
+        personnels = []
+        
+        for i in personnel :
+            partandpeople = i.split("/")
+            
+            obj = { "part" : partandpeople[0],
+                    "total" : int(partandpeople[1]),
+                    "cur_people" : 2 }
+            personnels.append(obj)
+
+        data = {"personnels":personnels}
+        data.update(serializer.data)
+        return Response(data)
