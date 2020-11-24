@@ -8,6 +8,7 @@ class Project(models.Model):
     writer = models.CharField(max_length=10)
     personnel = models.CharField(max_length=100)
     hashtag = models.CharField(max_length=100,null=True)
-    profile = models.CharField(max_length=200)
     
+    class Meta:
+        db_table = "project"
 
