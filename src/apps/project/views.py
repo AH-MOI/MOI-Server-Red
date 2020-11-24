@@ -10,7 +10,7 @@ from .models import Project
 from .serializers import ProjectSerializer
 
 
-class GetProjectAPI(generics.ListAPIView):
+class GetProjectAPI(generics.RetrieveAPIView):
 
     serializer_class = ProjectSerializer
 
@@ -20,3 +20,12 @@ class GetProjectAPI(generics.ListAPIView):
     def get_queryset(self):
         return Project.objects.get(id=self.kwargs["id"])
     
+class ListProjectAPI(generics.ListAPIView):
+
+    serializer_class = ProjectSerializer
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Project.objects.all()
