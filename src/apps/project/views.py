@@ -63,7 +63,7 @@ class ProjectViewSet(viewsets.ViewSet):
         personnels = []
         
 
-        for i in personnel :
+        for i in personnel[:-1] :
             partandpeople = i.split("/")
             cur_people = Participation.objects.filter(student_area=partandpeople[0]).aggregate(Count('id'))["id__count"]
             

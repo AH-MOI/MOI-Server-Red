@@ -5,7 +5,7 @@ class Project(models.Model):
     title = models.CharField(max_length=24)
     content = models.CharField(max_length=400)
     closing_date = models.DateField()
-    writer = models.CharField(max_length=10)
+    writer = models.CharField(max_length=100)
     personnel = models.CharField(max_length=100)
     hashtag = models.CharField(max_length=100,null=True)
     
